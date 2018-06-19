@@ -12,7 +12,7 @@ import io.swagger.annotations.Api;
 import net.sunil.bean.AppConstants;
 import net.sunil.bean.GenericResponse;
 import net.sunil.bean.LoginBean;
-import net.thrymr.service.UserService;
+import net.thrymr.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/users")
@@ -20,7 +20,7 @@ import net.thrymr.service.UserService;
 public class UserController {
 
   @Autowired
-  private UserService userService;
+  private UserServiceImpl userService;
 
 /*  @Autowired
   private ModelMapper modelMapper;*/
@@ -30,7 +30,7 @@ public class UserController {
     return new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS, userService.signin(loginBean));
   }
   
-  @GetMapping(value = "/get-users")
+  @GetMapping("get-users")
   public GenericResponse getUsers(Authentication authentication) {
     return  new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS,userService.getUsers(authentication));
   }
