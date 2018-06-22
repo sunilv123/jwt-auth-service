@@ -2,6 +2,11 @@ package net.thrymr.model;
 
 import java.io.Serializable;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+
 import org.springframework.data.redis.core.RedisHash;
 
 @RedisHash("Student")
@@ -16,6 +21,8 @@ public class Student implements Serializable {
         MALE, FEMALE
     }
 
+	//@Id
+//	@GeneratedValue(strategy = GenerationType.IDENTITY)
     private String id;
     private String name;
     private Gender gender;
@@ -23,6 +30,23 @@ public class Student implements Serializable {
 
     public Student(String id, String name, Gender gender, int grade) {
         this.id = id;
+        this.name = name;
+        this.gender = gender;
+        this.grade = grade;
+    }
+
+    
+    
+    
+    public Student() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
+
+
+
+
+	public Student(String name, Gender gender, int grade) {
         this.name = name;
         this.gender = gender;
         this.grade = grade;

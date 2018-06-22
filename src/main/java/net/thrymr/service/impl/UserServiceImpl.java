@@ -1,6 +1,7 @@
 package net.thrymr.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,9 @@ public class UserServiceImpl implements UserService{
   @Autowired
   StudentRepository studentRepository;
   
+  @Autowired
+  RedisRepositoryImpl redisRepositoryImpl;
+  
   public String signin(LoginBean loginBean) {
     try {
     	System.out.println("signin ================================== ==== ");     
@@ -67,12 +71,41 @@ public List<AppUser> getUsers(Authentication authentication) {
 	Assert.notNull(authentication.getPrincipal(), "User doesn't exist");
 	
 	Student student = new Student(
-								  "Eng2015001", "John Doe", Student.Gender.MALE, 1);
+								  "Eng20154", "John Doe", Student.Gender.MALE, 1);
 								   studentRepository.save(student);
 	
-	Student retrievedStudent = studentRepository.findById("Eng2015001").get();
-			
-	System.out.println(retrievedStudent.toString());
+	List<Student> retrievedStudent = studentRepository.findAll();
+	System.out.println(retrievedStudent.size());
+		
+	//for (int i = 3000000; i < 9000000; i++) {
+		
+	/*	Student student1 = new Student("ESSS", 
+				   "John Doe", Student.Gender.MALE, 1);
+		
+				   studentRepository.save(student);
+				   
+				  redisRepositoryImpl.add(student1);
+				  
+				  Student student2 = new Student("ESSS2", 
+						   "John Doe", Student.Gender.MALE, 1);
+						   studentRepository.save(student);
+				
+						  redisRepositoryImpl.add(student2);*/
+		
+	//}
+	
+						  
+						  
+	/* Map<Object, Object> map = redisRepositoryImpl.findAllMovies();
+	 
+	 System.out.println("map : "+map.size());*/
+	
+	/*map.forEach((key,val)->{
+		redisRepositoryImpl.delete(key+"");
+		//System.out.println(key+" ::: "+val);
+	});
+	*/
+	
 	
 	
 	return userRepository.findAll();

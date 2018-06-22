@@ -16,7 +16,7 @@ import net.thrymr.service.RedisRepository;
 @Service
 public class RedisRepositoryImpl implements RedisRepository{
 
-	private static final String KEY = "Movie"; 
+	private static final String KEY = "Student"; 
 	
     private RedisTemplate<String, Object> redisTemplate;
     

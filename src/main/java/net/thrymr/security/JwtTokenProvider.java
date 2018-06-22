@@ -17,6 +17,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
@@ -64,34 +65,40 @@ public class JwtTokenProvider {
         .setClaims(claims)//
         .setIssuedAt(dateTime.toDate())//
         .setExpiration(validity)//
-        .signWith(SignatureAlgorithm.HS256, secretKey)//
+        .signWith(SignatureAlgorithm.HS512, secretKey)//
         .compact();
   }
 
   public Authentication getAuthentication(String token) {
-    UserDetails userDetails = myUserDetails.loadUserByUsername(getUsername(token));
-    return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
-  }
+		try {
+	     UserDetails userDetails = myUserDetails.loadUserByUsername(getUsername(token));
+	     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
+		}catch (Exception e) {
+			throw new SecurityException("Token expired, please login to continue.");
+		}
+	  }
 
-  public String getUsername(String token) {
-    return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-  }
-
+	public String getUsername(String token)  {
+	    return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+	}
   public String resolveToken(HttpServletRequest req) {
     String bearerToken = req.getHeader("X-Authorization");
     if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-      return bearerToken.substring(7, bearerToken.length());
+      return bearerToken.replaceAll("Bearer ", "");
     }
     return null;
   }
 
   public boolean validateToken(String token) {
-    try {
-      Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
-      return true;
-    } catch (JwtException | IllegalArgumentException e) {
-      throw new CustomException("Expired or invalid JWT token", HttpStatus.INTERNAL_SERVER_ERROR);
-    }
-  }
+	    try {
+	    	
+	      //System.out.println("token : "+token);
+	      Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token);
+	      return true;
+	    } catch (JwtException | IllegalArgumentException e) {
+	    	throw new SecurityException("Token expired, please login to continue.");
+	    }
+	  }
+
 
 }

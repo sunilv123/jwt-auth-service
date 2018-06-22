@@ -1,23 +1,18 @@
 package net.thrymr.exception;
 
 import java.io.IOException;
-import java.util.Map;
 
 import javax.servlet.http.HttpServletResponse;
 
-//import org.springframework.boot.autoconfigure.web.DefaultErrorAttributes;
-//import org.springframework.boot.autoconfigure.web.ErrorAttributes;
-import org.springframework.context.annotation.Bean;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.RestControllerAdvice;
-import org.springframework.web.context.request.RequestAttributes;
 
-@RestControllerAdvice
+@ControllerAdvice
 public class GlobalExceptionHandlerController {
-/*
-  @Bean
+
+/*  @Bean
   public ErrorAttributes errorAttributes() {
     // Hide exception field in the return object
     return new DefaultErrorAttributes() {
@@ -28,8 +23,8 @@ public class GlobalExceptionHandlerController {
         return errorAttributes;
       }
     };
-  }
-*/
+  }*/
+
   @ExceptionHandler(CustomException.class)
   public void handleCustomException(CustomException e, HttpServletResponse res, CustomException ex) throws IOException {
 	  e.printStackTrace();

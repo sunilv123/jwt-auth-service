@@ -11,12 +11,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.validation.constraints.Size;
 
-import org.springframework.data.redis.core.RedisHash;
-
 @Entity
 /*@RedisHash("AppUser")*/
 public class AppUser {
-
+	
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
