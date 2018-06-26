@@ -11,7 +11,6 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 
 @Configuration
 @EnableGlobalMethodSecurity(prePostEnabled = true)
@@ -47,7 +46,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
   @Override
   public void configure(WebSecurity web) throws Exception {
-	  web.ignoring().antMatchers("/users/signin", "/users/signup");
+	  web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", 
+								  "/configuration/**", "/swagger-ui.html", "/webjars/**",
+						          "/users/signin", "/users/signup");
   }
 
   @Bean

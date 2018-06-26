@@ -19,6 +19,7 @@ public class JwtAuthServiceApp implements CommandLineRunner {
     SpringApplication.run(JwtAuthServiceApp.class, args);
   }
 
+
   @Override
   public void run(String... params) throws Exception {
     /*AppUser admin = new AppUser();
