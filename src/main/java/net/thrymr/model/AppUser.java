@@ -1,5 +1,7 @@
 package net.thrymr.model;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -13,9 +15,14 @@ import javax.validation.constraints.Size;
 
 @Entity
 /*@RedisHash("AppUser")*/
-public class AppUser {
+public class AppUser  implements Serializable{
 	
-  @Id
+  /**
+	 * 
+	 */
+	private static final long serialVersionUID = -2582050017159786286L;
+
+@Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Integer id;
 
@@ -30,7 +37,7 @@ public class AppUser {
   private String password;
 
   @ElementCollection(fetch = FetchType.EAGER)
-  List<Role> roles;
+  List<Role> roles  = new ArrayList<>();
 
   public Integer getId() {
     return id;
@@ -71,5 +78,11 @@ public class AppUser {
   public void setRoles(List<Role> roles) {
     this.roles = roles;
   }
+
+@Override
+public String toString() {
+	return "AppUser [id=" + id + ", username=" + username + ", email=" + email + ", password=" + password + ", roles="
+			+ roles + "]";
+}
 
 }

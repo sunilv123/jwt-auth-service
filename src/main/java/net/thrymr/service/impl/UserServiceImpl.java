@@ -1,5 +1,6 @@
 package net.thrymr.service.impl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +17,9 @@ import org.springframework.util.Assert;
 import net.sunil.bean.LoginBean;
 import net.thrymr.exception.CustomException;
 import net.thrymr.model.AppUser;
+import net.thrymr.model.Role;
 import net.thrymr.model.Student;
+import net.thrymr.repository.CustomerRepository;
 import net.thrymr.repository.StudentRepository;
 import net.thrymr.repository.UserRepository;
 import net.thrymr.security.JwtTokenProvider;
@@ -41,26 +44,54 @@ public class UserServiceImpl implements UserService{
   StudentRepository studentRepository;
   
   @Autowired
-  RedisRepositoryImpl redisRepositoryImpl;
+  private CustomerRepository customerRepository;
   
   public String signin(LoginBean loginBean) {
-    try {
-    	System.out.println("signin ================================== ==== ");     
-    	authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginBean.getUserName(), loginBean.getPassword()));
-      AppUser appUser = userRepository.findByUsername(loginBean.getUserName());
-      Assert.notNull(appUser, "User doesn't exist");
-      return jwtTokenProvider.createToken(loginBean.getUserName(), appUser.getRoles());
-    } catch (AuthenticationException e) {
-      throw new CustomException("Invalid username/password supplied", HttpStatus.UNPROCESSABLE_ENTITY);
-    }
+	  
+    	  System.out.println("signin ================================== ==== ");     
+    	//  authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(loginBean.getUserName(), loginBean.getPassword()));
+	      AppUser appUser = userRepository.findByUsername(loginBean.getUserName());
+	      Assert.notNull(appUser, "User doesn't exist");
+	      
+	      customerRepository.saveAppUser(appUser);
+	      
+	      System.out.println(appUser.getEmail() + " ====== "+customerRepository.findAppUser(appUser.getEmail()));
+	      
+	      
+	      return jwtTokenProvider.createToken(loginBean.getUserName(), appUser.getRoles());
   }
 
-  public String signup(AppUser user) {
+  public String signup(LoginBean loginBean) {
 	  System.out.println("signup ================================== ==== ");
-    if (!userRepository.existsByUsername(user.getUsername())) {
-      user.setPassword(passwordEncoder.encode(user.getPassword()));
-      userRepository.save(user);
-      return jwtTokenProvider.createToken(user.getUsername(), user.getRoles());
+    if (!userRepository.existsByUsername(loginBean.getUserName())) {
+    	
+      AppUser user1 = new AppUser();
+    	
+      user1.setPassword(passwordEncoder.encode(loginBean.getPassword()));
+      user1.setUsername(loginBean.getUserName());
+      user1.setEmail(loginBean.getEmail());
+      List<Role> role = new ArrayList<Role>();
+      role.add(Role.ROLE_ADMIN);
+      user1.setRoles(role);
+      userRepository.save(user1);
+      
+      customerRepository.saveAppUser(user1);
+      
+      for (int i = 0; i < 500; i++) {
+		
+    	  AppUser user = new AppUser();
+      	
+          user.setPassword(passwordEncoder.encode(loginBean.getPassword()));
+          user.setUsername(loginBean.getUserName()+i);
+          user.setEmail(loginBean.getEmail()+i);
+          user.setRoles(role);
+          userRepository.save(user);
+    	  
+          customerRepository.saveAppUser(user);
+	  }
+      
+      
+      return jwtTokenProvider.createToken(user1.getUsername(), user1.getRoles());
     } else {
       throw new CustomException("Username is already in use", HttpStatus.UNPROCESSABLE_ENTITY);
     }
@@ -70,45 +101,23 @@ public List<AppUser> getUsers(Authentication authentication) {
 	
 	Assert.notNull(authentication.getPrincipal(), "User doesn't exist");
 	
-	Student student = new Student(
+/*	Student student = new Student(
 								  "Eng20154", "John Doe", Student.Gender.MALE, 1);
 								   studentRepository.save(student);
 	
 	List<Student> retrievedStudent = studentRepository.findAll();
 	System.out.println(retrievedStudent.size());
-		
-	//for (int i = 3000000; i < 9000000; i++) {
-		
-	/*	Student student1 = new Student("ESSS", 
-				   "John Doe", Student.Gender.MALE, 1);
-		
-				   studentRepository.save(student);
-				   
-				  redisRepositoryImpl.add(student1);
-				  
-				  Student student2 = new Student("ESSS2", 
-						   "John Doe", Student.Gender.MALE, 1);
-						   studentRepository.save(student);
-				
-						  redisRepositoryImpl.add(student2);*/
-		
-	//}
+*/
+	/*userRepository.findAll().forEach(user->{
+		customerRepository.saveAppUser(user);
+	});*/
 	
-						  
-						  
-	/* Map<Object, Object> map = redisRepositoryImpl.findAllMovies();
-	 
-	 System.out.println("map : "+map.size());*/
+	/*Map<String, AppUser> list = customerRepository.findAllAppUser();*/
+	List<AppUser> list = userRepository.findAll();
 	
-	/*map.forEach((key,val)->{
-		redisRepositoryImpl.delete(key+"");
-		//System.out.println(key+" ::: "+val);
-	});
-	*/
+	System.out.println("User list "+list.size());
 	
-	
-	
-	return userRepository.findAll();
+	return list;
 }
 
 }

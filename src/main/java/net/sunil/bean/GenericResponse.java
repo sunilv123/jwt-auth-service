@@ -12,17 +12,27 @@ public class GenericResponse {
 	
 	private Object payLoad;
 	
-	public GenericResponse(String status, String errorMessage, Object payLoad) {
+	private String token;
+	
+	public GenericResponse(String status, String string, Object payLoad) {
 	
 		this.status = status;
-		this.errorMessage = errorMessage;
+		if(this.status.equals(AppConstants.GENERIC_RESPONSE_SUCCESS) ) {
+			this.token = string;	
+		}else {
+			this.errorMessage = string;
+		}
 		this.payLoad = payLoad;
 	}
 	
-	public GenericResponse(String status, String errorMessage) {
+	public GenericResponse(String status, String string) {
 		
 		this.status = status;
-		this.errorMessage = errorMessage;
+		if(this.status.equals(AppConstants.GENERIC_RESPONSE_SUCCESS) ) {
+			this.token = string;	
+		}else {
+			this.errorMessage = string;
+		}
 	}
 
 	public GenericResponse(String status, Object payLoad) {
@@ -53,6 +63,14 @@ public class GenericResponse {
 
 	public void setPayLoad(Object payLoad) {
 		this.payLoad = payLoad;
+	}
+
+	public String getToken() {
+		return token;
+	}
+
+	public void setToken(String token) {
+		this.token = token;
 	}
 	
 }

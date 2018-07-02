@@ -13,8 +13,10 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
 import net.sunil.bean.AppConstants;
+import net.sunil.bean.Customer;
 import net.sunil.bean.GenericResponse;
 import net.sunil.bean.LoginBean;
+import net.thrymr.repository.CustomerRepository;
 import net.thrymr.service.impl.UserServiceImpl;
 
 @RestController
@@ -25,17 +27,26 @@ public class UserController {
   @Autowired
   private UserServiceImpl userService;
 
-/*  @Autowired
-  private ModelMapper modelMapper;*/
+  @Autowired
+	private CustomerRepository customerRepository;
+
+	@RequestMapping(value = "/signup", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
+	 @ApiOperation(value = "${UserController.signup}", response = GenericResponse.class)
+	public GenericResponse signup(@RequestBody LoginBean loginBean) {
+
+		 return new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS, userService.signup(loginBean));
+	}
+  
   
   @RequestMapping(value= "/signin", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
   @ApiOperation(value = "${UserController.signin}", response = GenericResponse.class)
-  public GenericResponse login(@ApiParam("Signin User") @RequestBody LoginBean loginBean) {
+  public GenericResponse login(@ApiParam("Signin User") @RequestBody LoginBean loginBean)throws Exception {
     return new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS, userService.signin(loginBean));
   }
   
   @RequestMapping(value= "/get-users", method = RequestMethod.GET, produces = "application/json")
-  public GenericResponse getUsers(Authentication authentication) {
+  @ApiOperation(value = "${UserController.getUsers}", response = GenericResponse.class)
+  public GenericResponse getUsers(Authentication authentication)throws Exception {
     return  new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS,userService.getUsers(authentication));
   }
 

@@ -1,7 +1,5 @@
 package net.thrymr.configuration;
 
-import static springfox.documentation.builders.PathSelectors.regex;
-
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Optional;

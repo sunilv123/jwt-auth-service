@@ -8,8 +8,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import net.sunil.bean.AppConstants;
+import net.sunil.bean.GenericResponse;
 
 @ControllerAdvice
+@RestController
 public class GlobalExceptionHandlerController {
 
 /*  @Bean
@@ -37,10 +43,12 @@ public class GlobalExceptionHandlerController {
     res.sendError(HttpStatus.FORBIDDEN.value(), "Access denied");
   }
 
-  @ExceptionHandler(Exception.class)
-  public void handleException(Exception e, HttpServletResponse res) throws IOException {
-	  e.printStackTrace();
-    res.sendError(HttpStatus.BAD_REQUEST.value(), "Something went wrong");
-  }
+  @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+	@ExceptionHandler(value = Exception.class)
+	public GenericResponse handleException(final Exception e) {
+		e.printStackTrace();
+		return new GenericResponse(AppConstants.GENERIC_RESPONSE_FAILURE,
+				"Oops! Something went wrong, please try again");
+	}
 
 }
