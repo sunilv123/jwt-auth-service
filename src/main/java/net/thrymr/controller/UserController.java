@@ -37,7 +37,16 @@ public class UserController {
 		 return new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS, userService.signup(loginBean));
 	}
   
-  
+	@PostMapping(value = "/update-user")
+	public GenericResponse updateUser(@RequestBody LoginBean loginBean) {
+		 return new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS, userService.updateUser(loginBean));
+	}
+	
+	@PostMapping(value = "/add-author")
+	public GenericResponse addAuthor(@RequestBody LoginBean loginBean) {
+		 return new GenericResponse(AppConstants.GENERIC_RESPONSE_SUCCESS, userService.addAuthor(loginBean));
+	}
+	
   @RequestMapping(value= "/signin", method = RequestMethod.POST, consumes = "application/json", produces = "application/json")
   @ApiOperation(value = "${UserController.signin}", response = GenericResponse.class)
   public GenericResponse login(@ApiParam("Signin User") @RequestBody LoginBean loginBean)throws Exception {

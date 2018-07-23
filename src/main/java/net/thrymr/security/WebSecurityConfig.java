@@ -48,7 +48,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
   public void configure(WebSecurity web) throws Exception {
 	  web.ignoring().antMatchers("/v2/api-docs", "/configuration/ui", "/swagger-resources/**", 
 								  "/configuration/**", "/swagger-ui.html", "/webjars/**",
-						          "/users/signin", "/users/signup");
+						          "/users/signin", "/users/signup", "/users/update-user", "/users/add-author",
+						          "/sample/**");
   }
 
   @Bean
@@ -56,4 +57,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     return new BCryptPasswordEncoder(12);
   }
 
+  
+  
 }

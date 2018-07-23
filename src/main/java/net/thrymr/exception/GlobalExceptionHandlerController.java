@@ -32,9 +32,11 @@ public class GlobalExceptionHandlerController {
   }*/
 
   @ExceptionHandler(CustomException.class)
-  public void handleCustomException(CustomException e, HttpServletResponse res, CustomException ex) throws IOException {
+  public GenericResponse handleCustomException(CustomException e, HttpServletResponse res, CustomException ex) throws IOException {
 	  e.printStackTrace();
-    res.sendError(ex.getHttpStatus().value(), ex.getMessage());
+   // res.sendError(ex.getHttpStatus().value(), ex.getMessage());
+	return new GenericResponse(AppConstants.GENERIC_RESPONSE_FAILURE,
+			ex.getMessage());
   }
 
   @ExceptionHandler(AccessDeniedException.class)

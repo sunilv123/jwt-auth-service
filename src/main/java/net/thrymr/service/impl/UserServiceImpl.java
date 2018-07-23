@@ -2,14 +2,12 @@ package net.thrymr.service.impl;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.Assert;
@@ -17,8 +15,9 @@ import org.springframework.util.Assert;
 import net.sunil.bean.LoginBean;
 import net.thrymr.exception.CustomException;
 import net.thrymr.model.AppUser;
+import net.thrymr.model.Author;
 import net.thrymr.model.Role;
-import net.thrymr.model.Student;
+import net.thrymr.repository.AuthorRepository;
 import net.thrymr.repository.CustomerRepository;
 import net.thrymr.repository.StudentRepository;
 import net.thrymr.repository.UserRepository;
@@ -45,6 +44,9 @@ public class UserServiceImpl implements UserService{
   
   @Autowired
   private CustomerRepository customerRepository;
+  
+  @Autowired
+  AuthorRepository authorRepository;
   
   public String signin(LoginBean loginBean) {
 	  
@@ -75,9 +77,9 @@ public class UserServiceImpl implements UserService{
       user1.setRoles(role);
       userRepository.save(user1);
       
-      customerRepository.saveAppUser(user1);
+    /*  customerRepository.saveAppUser(user1);*/
       
-      for (int i = 0; i < 500; i++) {
+      /*for (int i = 0; i < 500; i++) {
 		
     	  AppUser user = new AppUser();
       	
@@ -89,7 +91,7 @@ public class UserServiceImpl implements UserService{
     	  
           customerRepository.saveAppUser(user);
 	  }
-      
+      */
       
       return jwtTokenProvider.createToken(user1.getUsername(), user1.getRoles());
     } else {
@@ -119,5 +121,50 @@ public List<AppUser> getUsers(Authentication authentication) {
 	
 	return list;
 }
+
+
+public AppUser getUsers(Integer id) {
+
+	Optional<AppUser> appUser = userRepository.findByEmail("id");
+	
+	return appUser.get();
+}
+
+public String updateUser(LoginBean loginBean) {
+	
+    Optional<AppUser> user = userRepository.findById(loginBean.getId());
+	
+    AppUser user1 = user.get();
+   
+    user1.setUsername(loginBean.getUserName());
+    user1.setEmail(loginBean.getEmail());
+    List<Role> role = new ArrayList<Role>();
+    role.add(Role.ROLE_ADMIN);
+    user1.setRoles(role);
+    userRepository.save(user1);
+	
+	return null;
+}
+
+public String addAuthor(LoginBean loginBean) {
+	
+	Optional<Author> authorOptional = null;
+	
+	if(loginBean.getAuthorId() != null) {
+	 authorOptional = authorRepository.findById(loginBean.getAuthorId());
+	}
+	
+	Author author = authorOptional != null ? authorOptional.get() : new Author();
+	
+	author.setName(loginBean.getName());
+	Optional<AppUser> user = userRepository.findById(loginBean.getId());
+	AppUser user1 = user.get();
+	author.setAppUser(user1);
+	
+	authorRepository.save(author);
+	 
+	return "SUCCESS";
+}
+
 
 }

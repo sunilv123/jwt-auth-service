@@ -1,25 +1,25 @@
 package net.thrymr;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.cache.annotation.EnableCaching;
-
-import net.thrymr.service.impl.UserServiceImpl;
+import org.springframework.context.annotation.Bean;
+import org.springframework.web.client.RestTemplate;
 
 @SpringBootApplication
 @EnableCaching 
 public class JwtAuthServiceApp implements CommandLineRunner {
 
-  @Autowired
-  UserServiceImpl userService;
-
   public static void main(String[] args) {
     SpringApplication.run(JwtAuthServiceApp.class, args);
   }
 
-
+	@Bean
+	public RestTemplate rest() {
+	 return new RestTemplate();
+	}
+  
   @Override
   public void run(String... params) throws Exception {
     /*AppUser admin = new AppUser();
